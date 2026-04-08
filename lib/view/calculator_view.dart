@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../controller/calculator_controller.dart';
 import 'converter_view.dart';
+import 'history_view.dart';
 
 class CalculatorPage extends StatefulWidget {
   const CalculatorPage({super.key});
@@ -51,10 +52,9 @@ class _CalculatorPageState extends State<CalculatorPage> {
     });
   }
 
-  void _onEqualsPress() {
-    setState(() {
-      controller.calculate();
-    });
+  Future<void> _onEqualsPress() async {
+    await controller.calculate();
+    setState(() {});
   }
 
   void _onClearPress() {
@@ -71,6 +71,15 @@ class _CalculatorPageState extends State<CalculatorPage> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         actions: [
+          IconButton(
+            icon: const Icon(Icons.history, color: Colors.orange),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const HistoryPage()),
+              );
+            },
+          ),
           IconButton(
             icon: const Icon(Icons.compare_arrows, color: Colors.orange),
             onPressed: () {

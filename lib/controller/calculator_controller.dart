@@ -1,8 +1,11 @@
 import '../model/calculator_model.dart';
+import '../database/db_helper.dart';
+import 'package:intl/intl.dart';
 
 class CalculatorController {
 
   final CalculatorModel _model = CalculatorModel();
+  final DBHelper _dbHelper = DBHelper();
 
   String display = "0";
 
@@ -18,18 +21,23 @@ class CalculatorController {
   }
 
   void setOperator(String operator) {
-    _firstNumber = double.parse(display);
+    _firstNumber = double.tryParse(display);
     _operator = operator;
     display = "0";
   }
 
-  void calculate() {
+  Future<void> calculate() async {
     if (_firstNumber == null || _operator == null) return;
 
-    double secondNumber = double.parse(display);
+    double secondNumber = double.tryParse(display) ?? 0;
 
     double result =
     _model.calculate(_firstNumber!, secondNumber, _operator!);
+
+    String calculation = "$_firstNumber $_operator $secondNumber = $result";
+    String timestamp = DateFormat('yyyy-MM-dd HH:mm').format(DateTime.now());
+
+    await _dbHelper.insertHistory(calculation, timestamp);
 
     display = result.toString();
 
